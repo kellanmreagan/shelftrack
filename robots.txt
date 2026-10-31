@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kellanmreagan.github.io/shelftrack/sitemap.xml

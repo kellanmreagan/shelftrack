@@ -1,75 +1,111 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ShelfTrack: Action Figure Collection Tracker</title>
+<meta name="description" content="Free action figure collection tracker: log every figure, wishlist target prices, and see what you paid vs. what your shelf is worth.">
+<link rel="canonical" href="https://kellanmreagan.github.io/shelftrack/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ShelfTrack">
+<meta property="og:title" content="ShelfTrack: Action Figure Collection Tracker">
+<meta property="og:description" content="Free action figure collection tracker: log every figure, wishlist target prices, and see what you paid vs. what your shelf is worth.">
+<meta property="og:url" content="https://kellanmreagan.github.io/shelftrack/">
+<meta property="og:image" content="https://kellanmreagan.github.io/shelftrack/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ShelfTrack: Action Figure Collection Tracker">
+<meta name="twitter:description" content="Free action figure collection tracker: log every figure, wishlist target prices, and see what you paid vs. what your shelf is worth.">
+<meta name="twitter:image" content="https://kellanmreagan.github.io/shelftrack/og.png">
+<meta name="theme-color" content="#0f1220">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
 <style>
 :root{--bg:#0f1220;--card:#181c2f;--line:#2a3050;--txt:#e8eaf6;--mut:#9aa0c3;--acc:#ffb703;--ok:#4ade80;--bad:#f87171}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt)}
 a{color:var(--acc)}.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-nav{display:flex;justify-content:space-between;align-items:center;padding:16px 0}.logo{font-weight:800;font-size:20px}.logo span{color:var(--acc)}
+nav{display:flex;justify-content:space-between;align-items:center;padding:16px 0;gap:12px}nav .links{display:flex;gap:14px;align-items:center}.logo{font-weight:800;font-size:20px}.logo span{color:var(--acc)}
 .hero{text-align:center;padding:50px 0 30px}.hero h1{font-size:42px;margin:0 0 12px}.hero p{color:var(--mut);font-size:18px;margin:0 auto 24px;max-width:620px}
-.btn{background:var(--acc);color:#111;border:0;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer}.btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}.btn.sm{padding:6px 10px;font-size:13px}.btn.danger{background:var(--bad)}
+.cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{background:var(--acc);color:#111;border:0;border-radius:8px;padding:10px 16px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}.btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}.btn.sm{padding:6px 10px;font-size:13px}.btn.danger{background:var(--bad)}.btn:disabled{opacity:.6;cursor:wait}
+.btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
 .card h3{margin-top:0}.mut{color:var(--mut)}section{padding:30px 0}h2{font-size:28px}
+.feats h3{font-size:19px}
 .price{font-size:34px;font-weight:800}.price small{font-size:14px;color:var(--mut)}.pro{border-color:var(--acc)}ul.feat{padding-left:18px;line-height:1.8}
-form.wait{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}input,select{background:#0b0e1a;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:inherit}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}.stat .v{font-size:26px;font-weight:800}
+.badge{display:inline-block;background:var(--acc);color:#111;font-size:12px;font-weight:700;padding:3px 8px;border-radius:99px;vertical-align:middle;margin-left:6px}
+form.wait{display:flex;gap:8px;flex-wrap:wrap}form.wait input{flex:1;min-width:180px}input,select{background:#0b0e1a;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:inherit}
+.fine{font-size:13px;margin:8px 0 0}.err{color:var(--bad)}.okc{color:var(--ok)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}.stat .v{font-size:26px;font-weight:800}
 .tabs{display:flex;gap:8px;margin:10px 0}.tabs button.on{background:var(--acc);color:#111}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}th{color:var(--mut);font-weight:600}
-td img{width:44px;height:44px;object-fit:cover;border-radius:6px;background:#222}.up{color:var(--ok)}.down{color:var(--bad)}
-.modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;z-index:9}.modal.on{display:flex}
-.modal .card{width:min(520px,94vw)}.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fgrid label{display:flex;flex-direction:column;font-size:13px;color:var(--mut);gap:4px}.fgrid .full{grid-column:1/-1}
+.note{display:flex;gap:8px 16px;flex-wrap:wrap;justify-content:space-between;font-size:13px;margin:6px 0 10px}
+.tablewrap{overflow-x:auto;border-radius:12px;background:var(--card)}
+table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}th{color:var(--mut);font-weight:600}
+td img,.ph{width:44px;height:44px;object-fit:cover;border-radius:6px;background:#222;display:flex;align-items:center;justify-content:center;font-size:22px}.up{color:var(--ok)}.down{color:var(--bad)}
+.modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;z-index:9;padding:10px}.modal.on{display:flex}
+.modal .card{width:min(520px,94vw);max-height:90vh;overflow:auto}.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fgrid label{display:flex;flex-direction:column;font-size:13px;color:var(--mut);gap:4px}.fgrid .full{grid-column:1/-1}.fgrid input,.fgrid select{width:100%;min-width:0}
+.mbtns{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .locked{position:relative;opacity:.85}.locked:after{content:"🔒 Pro";position:absolute;top:12px;right:12px;background:var(--acc);color:#111;font-weight:700;font-size:12px;padding:3px 8px;border-radius:99px}
-.blur{filter:blur(3px);user-select:none}footer{padding:30px 0;color:var(--mut);text-align:center;font-size:13px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ok);color:#111;padding:10px 16px;border-radius:8px;font-weight:700;display:none}
+.blur{filter:blur(3px);user-select:none}footer{padding:30px 0;color:var(--mut);text-align:center;font-size:13px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ok);color:#111;padding:10px 16px;border-radius:8px;font-weight:700;display:none;z-index:20}
+@media(max-width:600px){th:nth-child(3),td:nth-child(3),th:nth-child(5),td:nth-child(5){display:none}.fgrid{grid-template-columns:1fr}.hero h1{font-size:32px}th,td{padding:8px 6px}}
+@media(pointer:coarse){.btn,.btn.sm,nav a{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}}
 </style></head><body>
 <div class="wrap">
-<nav><div class="logo">Shelf<span>Track</span></div><div><a href="#pricing">Pricing</a> &nbsp; <a href="#app" class="btn sm">Open app</a></div></nav>
+<header><nav aria-label="Main"><div class="logo">Shelf<span>Track</span></div><div class="links"><a href="#pricing">Pricing</a><a href="#app" class="btn sm">Open app</a></div></nav></header>
 
-<header class="hero"><h1>Know what your collection is worth.</h1>
+<main>
+<section class="hero" aria-labelledby="heroTitle"><h1 id="heroTitle">Know what your collection is worth.</h1>
 <p>Track every action figure you own, build your wishlist, and see your total paid vs. today's value in one clean dashboard. Free forever, Pro when you want more.</p>
-<form class="wait" id="waitForm"><input type="email" id="waitEmail" placeholder="you@email.com" required><button class="btn">Join the Pro waitlist</button></form>
-<p class="mut" id="waitMsg" style="font-size:13px;margin-top:10px"></p></header>
+<div class="cta"><a href="#app" class="btn" id="startFree">Start tracking free</a><a href="#pro" class="btn ghost">Join the Pro waitlist</a></div>
+<p class="mut fine">No account needed. Your collection stays in this browser.</p>
+</section>
 
-<section><div class="grid3">
+<section class="feats" aria-labelledby="featTitle"><h2 id="featTitle" class="sr-only">Features</h2><div class="grid3">
 <div class="card"><h3>📦 Every figure, one place</h3><p class="mut">Line, year, condition, price paid and photo. Search and filter in seconds instead of digging through spreadsheets.</p></div>
 <div class="card"><h3>💰 Paid vs. worth</h3><p class="mut">See what you've spent and what your shelf is worth now, with gain or loss on every figure.</p></div>
 <div class="card"><h3>🎯 Smarter wishlist</h3><p class="mut">Set a target price for every grail so you never overpay. Pro adds alerts when prices drop.</p></div>
 </div></section>
 
-<section id="pricing"><h2>Pricing</h2><div class="grid3">
-<div class="card"><h3>Free</h3><div class="price">$0</div><ul class="feat"><li>Unlimited figures</li><li>Wishlist with target prices</li><li>Paid vs. estimated value totals</li><li>Search & filter</li><li>CSV import / export</li></ul></div>
-<div class="card pro"><h3>Pro</h3><div class="price">$4<small>/month</small></div><ul class="feat"><li>Everything in Free</li><li>Wishlist price-drop alerts</li><li>Automatic value tracking over time</li><li>Collection value history chart</li><li>Cloud sync across devices</li></ul><a href="#waitForm" class="btn">Join waitlist</a></div>
+<section id="pricing" aria-labelledby="pricingTitle"><h2 id="pricingTitle">Pricing</h2><div class="grid3">
+<div class="card"><h3>Free</h3><div class="price">$0</div><ul class="feat"><li>Unlimited figures</li><li>Wishlist with target prices</li><li>Paid vs. estimated value totals</li><li>Search &amp; filter</li><li>CSV import / export</li></ul><a href="#app" class="btn ghost">Start free</a></div>
+<div class="card pro" id="pro"><h3>Pro <span class="badge">Coming soon</span></h3><div class="price">$4<small>/month</small></div><ul class="feat"><li>Everything in Free</li><li>Wishlist price-drop alerts</li><li>Automatic value tracking over time</li><li>Collection value history chart</li><li>Cloud sync across devices</li></ul>
+<form class="wait" id="waitForm" novalidate><label for="waitEmail" class="sr-only">Email address</label><input type="email" id="waitEmail" name="email" placeholder="you@email.com" autocomplete="email" required><button class="btn" type="submit" id="waitBtn">Join waitlist</button></form>
+<p class="mut fine">No spam. One email when Pro launches, unsubscribe anytime.</p>
+<p class="fine" id="waitMsg" role="status" aria-live="polite"></p></div>
 </div></section>
 
-<section id="app"><h2>Your collection</h2>
+<section id="app" aria-labelledby="appTitle"><h2 id="appTitle">Your collection</h2>
 <div class="stats">
 <div class="card stat"><div class="mut">Figures owned</div><div class="v" id="sCount">0</div></div>
 <div class="card stat"><div class="mut">Total paid</div><div class="v" id="sPaid">$0</div></div>
 <div class="card stat"><div class="mut">Estimated value</div><div class="v" id="sValue">$0</div></div>
 <div class="card stat"><div class="mut">Gain / loss</div><div class="v" id="sGain">$0</div></div>
 </div>
-<div class="tabs"><button class="btn ghost on" data-tab="owned">Collection</button><button class="btn ghost" data-tab="wish">Wishlist</button></div>
+<div class="tabs" role="group" aria-label="Which list"><button type="button" class="btn ghost on" data-tab="owned" aria-pressed="true">Collection</button><button type="button" class="btn ghost" data-tab="wish" aria-pressed="false">Wishlist</button></div>
 <div class="toolbar">
-<input id="q" placeholder="Search name or line…" style="flex:1;min-width:180px">
-<select id="fLine"><option value="">All lines</option></select>
-<select id="fCond"><option value="">Any condition</option></select>
-<button class="btn" id="addBtn">+ Add figure</button>
-<button class="btn ghost" id="expBtn">Export CSV</button>
-<label class="btn ghost" style="display:inline-block">Import CSV<input type="file" id="impFile" accept=".csv" hidden></label>
+<input id="q" type="search" placeholder="Search name or line…" aria-label="Search figures" style="flex:1;min-width:180px">
+<select id="fLine" aria-label="Filter by line"><option value="">All lines</option></select>
+<select id="fCond" aria-label="Filter by condition"><option value="">Any condition</option></select>
+<button type="button" class="btn" id="addBtn">+ Add figure</button>
+<button type="button" class="btn ghost" id="expBtn">Export CSV</button>
+<button type="button" class="btn ghost" id="impBtn">Import CSV</button><input type="file" id="impFile" accept=".csv,text/csv" hidden>
 </div>
-<table><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+<div class="note mut" id="storageNote"><span>💾 Saved in this browser only. Export CSV to back up.</span><span>☁️ Cloud sync across devices is coming in <a href="#pro">Pro</a>.</span></div>
+<div class="tablewrap"><table><caption class="sr-only" id="tCap">Your collection</caption><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
 <p class="mut" id="empty" style="text-align:center;padding:20px;display:none">Nothing here yet. Add your first figure.</p>
 
 <h2 style="margin-top:40px">Pro tools</h2><div class="grid3">
-<div class="card locked"><h3>🔔 Price alerts</h3><p class="mut">Get an email when a wishlist figure drops below your target on eBay or major retailers.</p><div class="blur">Black Series Darth Revan: $38 → $27 ✅</div></div>
-<div class="card locked"><h3>📈 Value tracking</h3><p class="mut">Values update automatically from recent sold listings, with a history chart of your shelf's worth.</p><div class="blur">Collection +12.4% this quarter</div></div>
-</div></section>
-<footer>ShelfTrack MVP · Data is stored only in this browser (localStorage).</footer>
+<div class="card locked"><h3>🔔 Price alerts</h3><p class="mut">Get an email when a wishlist figure drops below your target on eBay or major retailers.</p><div class="blur" aria-hidden="true">Black Series Darth Revan: $38 → $27 ✅</div></div>
+<div class="card locked"><h3>📈 Value tracking</h3><p class="mut">Values update automatically from recent sold listings, with a history chart of your shelf's worth.</p><div class="blur" aria-hidden="true">Collection +12.4% this quarter</div></div>
+</div>
+<p style="text-align:center;margin-top:16px">Want these? <a href="#pro">Join the waitlist</a></p>
+</section>
+</main>
+<footer>© 2026 ShelfTrack · <a href="#privacy">Privacy</a>
+<p id="privacy" class="fine">Privacy: your collection is stored only in this browser (localStorage). No accounts, cookies, or trackers. Waitlist emails are used only to tell you when Pro launches.</p></footer>
 </div>
 
-<div class="modal" id="modal"><div class="card"><h3 id="mTitle">Add figure</h3>
+<div class="modal" id="modal"><div class="card" role="dialog" aria-modal="true" aria-labelledby="mTitle"><h3 id="mTitle">Add figure</h3>
 <form id="fForm" class="fgrid">
-<label class="full">Name<input name="name" required></label>
+<label class="full">Name<input name="name" required pattern=".*\S.*" title="Enter a name"></label>
 <label>Line / brand<input name="line" placeholder="Star Wars Black Series"></label>
 <label>Year<input name="year" type="number" min="1960" max="2100"></label>
 <label>Condition<select name="condition"><option>Mint in box</option><option>Opened, complete</option><option>Loose</option><option>Damaged</option></select></label>
@@ -78,24 +114,46 @@ td img{width:44px;height:44px;object-fit:cover;border-radius:6px;background:#222
 <label>Estimated value ($)<input name="value" type="number" step="0.01" min="0"></label>
 <label>Target price ($, wishlist)<input name="target" type="number" step="0.01" min="0"></label>
 <label>Photo URL<input name="photo" type="url"></label>
-<div class="full" style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn ghost" id="cancel">Cancel</button><button class="btn" id="saveBtn">Save</button></div>
+<div class="full mbtns"><button type="button" class="btn ghost" id="cancel">Cancel</button><button type="submit" class="btn" id="saveBtn">Save</button></div>
 </form></div></div>
-<div class="toast" id="toast"></div>
+
+<div class="modal" id="impModal"><div class="card" role="dialog" aria-modal="true" aria-labelledby="iTitle"><h3 id="iTitle">Import CSV</h3>
+<p class="mut" id="iInfo">How should this file be imported?</p>
+<p class="mut fine"><b>Merge</b> adds new figures and skips ones you already have. <b>Replace</b> deletes your current list and uses the file instead.</p>
+<div class="mbtns"><button type="button" class="btn ghost" id="iCancel">Cancel</button><button type="button" class="btn danger" id="iReplace">Replace collection</button><button type="button" class="btn" id="iMerge">Merge</button></div>
+</div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+/* ===== CONFIG =====================================================
+   WAITLIST_ENDPOINT: URL that receives Pro waitlist signups.
+   Leave empty ('') until you have one. When empty, the form says the
+   waitlist is opening soon and collects nothing.
+   Example (Formspree): 'https://formspree.io/f/abcdwxyz'
+   The email is POSTed as JSON {"email": "..."}; success is shown only
+   on a 2xx response. See README.md.
+   ================================================================== */
+const WAITLIST_ENDPOINT = '';
+
 const KEY='shelftrack.figures',WKEY='shelftrack.waitlist';
 const FIELDS=['id','list','name','line','year','condition','paid','value','target','photo'];
-let figs=JSON.parse(localStorage.getItem(KEY)||'null');
+const NUMS=['paid','value','target','year'];
+const $=s=>document.querySelector(s),money=n=>'$'+(+n||0).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2});
+function uid(){return Math.random().toString(36).slice(2,10)}
+function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');return Array.isArray(v)?v.filter(f=>f&&typeof f==='object'):null}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(figs));return true}catch(e){toast("Couldn't save: storage full or disabled",true);return false}}
+let figs=load();
 if(!figs){figs=[
 {id:uid(),list:'owned',name:'Darth Vader (ANH)',line:'Star Wars Black Series',year:2020,condition:'Mint in box',paid:22,value:35,target:'',photo:''},
 {id:uid(),list:'owned',name:'Optimus Prime',line:'Transformers Studio Series',year:2022,condition:'Opened, complete',paid:50,value:44,target:'',photo:''},
 {id:uid(),list:'wish',name:'Darth Revan',line:'Star Wars Black Series',year:2018,condition:'Mint in box',paid:'',value:38,target:28,photo:''}];save();}
-let tab='owned',editId=null;
-const $=s=>document.querySelector(s),money=n=>'$'+(+n||0).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2});
-function uid(){return Math.random().toString(36).slice(2,10)}
-function save(){localStorage.setItem(KEY,JSON.stringify(figs))}
+let tab='owned',editId=null,lastFocus=null,pendingCSV=null;
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
+let tT;function toast(m,bad){const t=$('#toast');t.textContent=m;t.style.background=bad?'var(--bad)':'var(--ok)';t.style.display='block';clearTimeout(tT);tT=setTimeout(()=>t.style.display='none',2400)}
+function toNum(v){if(v===''||v==null)return '';const n=parseFloat(String(v).replace(/[$,\s]/g,''));return isFinite(n)?n:''}
+function clean(f){const o={};FIELDS.forEach(k=>{let v=f[k]??'';if(typeof v==='string')v=v.trim();o[k]=v});NUMS.forEach(k=>o[k]=toNum(o[k]));if(o.list!=='wish')o.list='owned';return o}
+function phFail(img){const d=document.createElement('div');d.className='ph';d.setAttribute('role','img');d.setAttribute('aria-label',img.alt||'No photo');d.textContent='📦';img.replaceWith(d)}
+function photo(f){return f.photo?`<img src="${esc(f.photo)}" alt="${esc(f.name)}" loading="lazy" onerror="phFail(this)">`:`<div class="ph" role="img" aria-label="No photo">📦</div>`}
 function render(){
  const own=figs.filter(f=>f.list==='owned'),paid=own.reduce((a,f)=>a+(+f.paid||0),0),val=own.reduce((a,f)=>a+(+f.value||0),0),g=val-paid;
  $('#sCount').textContent=own.length;$('#sPaid').textContent=money(paid);$('#sValue').textContent=money(val);
@@ -106,32 +164,66 @@ function render(){
  $('#fCond').innerHTML='<option value="">Any condition</option>'+conds.map(l=>`<option${l===cc?' selected':''}>${esc(l)}</option>`).join('');
  const q=$('#q').value.toLowerCase(),fl=$('#fLine').value,fc=$('#fCond').value;
  const rows=figs.filter(f=>f.list===tab&&(!q||(f.name+' '+f.line).toLowerCase().includes(q))&&(!fl||f.line===fl)&&(!fc||f.condition===fc));
- $('#thead').innerHTML=tab==='owned'?'<tr><th></th><th>Name</th><th>Line</th><th>Year</th><th>Condition</th><th>Paid</th><th>Value</th><th>+/-</th><th></th></tr>':'<tr><th></th><th>Name</th><th>Line</th><th>Year</th><th>Est. price</th><th>Target</th><th>Status</th><th></th></tr>';
- $('#tbody').innerHTML=rows.map(f=>{const img=f.photo?`<img src="${esc(f.photo)}" alt="">`:'<img alt="">',act=`<td style="white-space:nowrap"><button class="btn ghost sm" data-edit="${f.id}">Edit</button> <button class="btn danger sm" data-del="${f.id}">✕</button></td>`;
-  if(tab==='owned'){const d=(+f.value||0)-(+f.paid||0);return `<tr><td>${img}</td><td>${esc(f.name)}</td><td>${esc(f.line)}</td><td>${esc(f.year)}</td><td>${esc(f.condition)}</td><td>${money(f.paid)}</td><td>${money(f.value)}</td><td class="${d>=0?'up':'down'}">${d>=0?'+':'-'}${money(Math.abs(d))}</td>${act}</tr>`}
-  const hit=f.target&&f.value&&+f.value<=+f.target;return `<tr><td>${img}</td><td>${esc(f.name)}</td><td>${esc(f.line)}</td><td>${esc(f.year)}</td><td>${money(f.value)}</td><td>${money(f.target)}</td><td class="${hit?'up':'mut'}">${hit?'At/below target':'Waiting'}</td>${act}</tr>`}).join('');
+ const ph='<th><span class="sr-only">Photo</span></th>',ah='<th><span class="sr-only">Actions</span></th>';
+ $('#tCap').textContent=tab==='owned'?'Your collection':'Your wishlist';
+ $('#thead').innerHTML=tab==='owned'?`<tr>${ph}<th>Name</th><th>Line</th><th>Year</th><th>Condition</th><th>Paid</th><th>Value</th><th>+/-</th>${ah}</tr>`:`<tr>${ph}<th>Name</th><th>Line</th><th>Year</th><th>Est. price</th><th>Target</th><th>Status</th>${ah}</tr>`;
+ $('#tbody').innerHTML=rows.map(f=>{const img=photo(f),n=esc(f.name),act=`<td style="white-space:nowrap"><button type="button" class="btn ghost sm" data-edit="${esc(f.id)}" aria-label="Edit ${n}">Edit</button> <button type="button" class="btn danger sm" data-del="${esc(f.id)}" aria-label="Delete ${n}">✕</button></td>`;
+  if(tab==='owned'){const d=(+f.value||0)-(+f.paid||0);return `<tr><td>${img}</td><td>${n}</td><td>${esc(f.line)}</td><td>${esc(f.year)}</td><td>${esc(f.condition)}</td><td>${money(f.paid)}</td><td>${money(f.value)}</td><td class="${d>=0?'up':'down'}">${d>=0?'+':'-'}${money(Math.abs(d))}</td>${act}</tr>`}
+  const hit=f.target&&f.value&&+f.value<=+f.target;return `<tr><td>${img}</td><td>${n}</td><td>${esc(f.line)}</td><td>${esc(f.year)}</td><td>${money(f.value)}</td><td>${money(f.target)}</td><td class="${hit?'up':'mut'}">${hit?'At/below target':'Waiting'}</td>${act}</tr>`}).join('');
  $('#empty').style.display=rows.length?'none':'block';
 }
+function openM(id,focusEl){lastFocus=document.activeElement;$(id).classList.add('on');(focusEl||$(id).querySelector('button')).focus()}
+function closeM(id){const m=$(id);if(!m.classList.contains('on'))return;m.classList.remove('on');if(id==='#impModal')pendingCSV=null;const r=lastFocus&&document.contains(lastFocus)?lastFocus:$('#addBtn');r.focus();lastFocus=null}
 function openModal(f){editId=f?f.id:null;$('#mTitle').textContent=f?'Edit figure':'Add figure';const fm=$('#fForm');fm.reset();
- if(f)FIELDS.forEach(k=>{if(fm.elements[k])fm.elements[k].value=f[k]??''});else fm.elements.list.value=tab;$('#modal').classList.add('on')}
-$('#addBtn').onclick=()=>openModal();$('#cancel').onclick=()=>$('#modal').classList.remove('on');
-$('#fForm').onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));
- if(editId){Object.assign(figs.find(f=>f.id===editId),d)}else figs.push({id:uid(),...d});save();$('#modal').classList.remove('on');tab=d.list;syncTabs();render();toast('Saved')};
-$('#tbody').onclick=e=>{const ed=e.target.dataset.edit,de=e.target.dataset.del;
- if(ed)openModal(figs.find(f=>f.id===ed));if(de&&confirm('Delete this figure?')){figs=figs.filter(f=>f.id!==de);save();render()}};
+ if(f)FIELDS.forEach(k=>{if(fm.elements[k])fm.elements[k].value=f[k]??''});else fm.elements.list.value=tab;openM('#modal',fm.elements.name)}
+$('#addBtn').onclick=()=>openModal();$('#cancel').onclick=()=>closeM('#modal');
+['#modal','#impModal'].forEach(id=>$(id).addEventListener('click',e=>{if(e.target===e.currentTarget)closeM(id)}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeM('#modal');closeM('#impModal')}});
+$('#fForm').onsubmit=e=>{e.preventDefault();const d=clean(Object.fromEntries(new FormData(e.target)));
+ if(!d.name){e.target.elements.name.focus();return toast('Name required',true)}
+ delete d.id;if(editId){Object.assign(figs.find(f=>f.id===editId),d)}else figs.push({id:uid(),...d});save();lastFocus=$('#addBtn');closeM('#modal');tab=d.list;syncTabs();render();toast('Saved')};
+$('#tbody').onclick=e=>{const b=e.target.closest('button');if(!b)return;const ed=b.dataset.edit,de=b.dataset.del;
+ if(ed)openModal(figs.find(f=>f.id===ed));if(de&&confirm('Delete this figure?')){figs=figs.filter(f=>f.id!==de);save();render();$('#addBtn').focus()}};
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;syncTabs();render()});
-function syncTabs(){document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab))}
+function syncTabs(){document.querySelectorAll('.tabs button').forEach(b=>{const on=b.dataset.tab===tab;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}
 ['#q','#fLine','#fCond'].forEach(s=>$(s).addEventListener('input',render));
-function toCSV(){const h=FIELDS.slice(1);return [h.join(',')].concat(figs.map(f=>h.map(k=>'"'+String(f[k]??'').replace(/"/g,'""')+'"').join(','))).join('\n')}
-function parseCSV(t){const rows=[];let r=[],c='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];
+function cell(v){let s=String(v??'');if(/^[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
+function toCSV(){return [FIELDS.join(',')].concat(figs.map(f=>FIELDS.map(k=>cell(f[k])).join(','))).join('\n')}
+function parseCSV(t){t=String(t).replace(/^\uFEFF/,'');const rows=[];let r=[],c='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];
  if(q){if(ch=='"'&&t[i+1]=='"'){c+='"';i++}else if(ch=='"')q=false;else c+=ch}
  else if(ch=='"')q=true;else if(ch==','){r.push(c);c=''}else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;r.push(c);rows.push(r);r=[];c=''}else c+=ch}
  if(c||r.length){r.push(c);rows.push(r)}return rows.filter(x=>x.some(v=>v.trim()))}
-function importCSV(t){const [h,...rs]=parseCSV(t),keys=h.map(x=>x.trim().toLowerCase());let n=0;
- rs.forEach(r=>{const f={id:uid(),list:'owned'};keys.forEach((k,i)=>{if(FIELDS.includes(k)&&k!=='id')f[k]=r[i]??''});if(f.list!=='wish')f.list='owned';if(f.name){figs.push(f);n++}});save();render();return n}
+const sig=f=>[f.name,f.line,f.year].map(x=>String(x??'').trim().toLowerCase()).join('|');
+/* importCSV(text, mode='merge'|'replace') -> number of figures added. Details in ShelfTrack.lastImport. */
+function importCSV(t,mode){mode=mode==='replace'?'replace':'merge';const rows=parseCSV(t);let added=0,skipped=0,dupes=0;
+ if(!rows.length){lastImport={added,skipped,dupes};return 0}
+ const [h,...rs]=rows,keys=h.map(x=>x.trim().toLowerCase());
+ const base=mode==='replace'?[]:figs.slice(),ids=new Set(base.map(f=>f.id)),sigs=new Set(base.map(sig)),out=[];
+ rs.forEach(r=>{const raw={};keys.forEach((k,i)=>{if(FIELDS.includes(k)){let v=r[i]??'';if(/^'[=+\-@\t\r]/.test(v))v=v.slice(1);raw[k]=v}});
+  const badNum=NUMS.some(k=>raw[k]!=null&&String(raw[k]).trim()!==''&&toNum(raw[k])==='');
+  const f=clean(raw);if(!f.name||badNum){skipped++;return}
+  if((f.id&&ids.has(f.id))||sigs.has(sig(f))){dupes++;return}
+  if(!f.id||ids.has(f.id))f.id=uid();ids.add(f.id);sigs.add(sig(f));out.push(f);added++});
+ figs=base.concat(out);save();render();lastImport={added,skipped,dupes};return added}
+let lastImport=null;
 $('#expBtn').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([toCSV()],{type:'text/csv'}));a.download='shelftrack-collection.csv';a.click();toast('Exported')};
-$('#impFile').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{toast('Imported '+importCSV(t)+' figures')});e.target.value=''};
-$('#waitForm').onsubmit=e=>{e.preventDefault();const em=$('#waitEmail').value.trim(),l=JSON.parse(localStorage.getItem(WKEY)||'[]');if(!l.includes(em))l.push(em);localStorage.setItem(WKEY,JSON.stringify(l));$('#waitMsg').textContent="You're on the list! We'll email you when Pro launches.";e.target.reset()};
-window.ShelfTrack={toCSV,importCSV,get figs(){return figs}};
+$('#impBtn').onclick=()=>$('#impFile').click();
+$('#impFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;f.text().then(t=>{pendingCSV=t;
+ if(!figs.length)return doImport('merge');$('#iInfo').textContent=`Importing "${f.name}". You have ${figs.length} figures now.`;lastFocus=$('#impBtn');$('#impModal').classList.add('on');$('#iMerge').focus()})};
+function doImport(mode){const t=pendingCSV;$('#impModal').classList.remove('on');pendingCSV=null;$('#impBtn').focus();if(t==null)return;
+ const n=importCSV(t,mode),li=lastImport;let m=`Imported ${n}`;if(li.dupes)m+=`, ${li.dupes} already there`;if(li.skipped)m+=`, skipped ${li.skipped} invalid`;toast(m,!n&&li.skipped>0)}
+$('#iMerge').onclick=()=>doImport('merge');$('#iReplace').onclick=()=>{if(confirm('Replace your whole list with this file?'))doImport('replace')};$('#iCancel').onclick=()=>closeM('#impModal');
+$('#waitForm').onsubmit=async e=>{e.preventDefault();const msg=$('#waitMsg'),inp=$('#waitEmail'),btn=$('#waitBtn'),em=inp.value.trim();
+ msg.className='fine';
+ if(!WAITLIST_ENDPOINT){msg.className='fine mut';msg.textContent='Waitlist opening soon. Use Start free in the meantime.';return}
+ if(!em||!inp.checkValidity()){msg.className='fine err';msg.textContent='Enter a valid email address.';inp.focus();return}
+ btn.disabled=true;msg.textContent='Sending…';
+ try{const r=await fetch(WAITLIST_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email:em,source:'shelftrack'})});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  try{const l=JSON.parse(localStorage.getItem(WKEY)||'[]');if(!l.includes(em))l.push(em);localStorage.setItem(WKEY,JSON.stringify(l))}catch(_){}
+  msg.className='fine okc';msg.textContent="You're on the list! We'll email you when Pro launches.";e.target.reset()}
+ catch(err){msg.className='fine err';msg.textContent="Sorry, that didn't go through. Please try again in a minute."}
+ finally{btn.disabled=false}};
+window.ShelfTrack={toCSV,importCSV,get figs(){return figs},get lastImport(){return lastImport}};
 render();
 </script></body></html>
